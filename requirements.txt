@@ -1,8 +1,0 @@
-pandas
-streamlit
-numpy
-datetime
-PIL
-os
-base64
-jinja2
