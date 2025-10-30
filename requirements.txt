@@ -6,4 +6,3 @@ PIL
 os
 base64
 jinja2
-openpyxl
