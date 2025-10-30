@@ -1,0 +1,75 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+from datetime import datetime
+
+# ---------- Datos de ejemplo ----------
+data = [
+    {
+        "nombre":"Beaujean Huerta Bryan Axcel",
+        "dictamen":[345, 23, 81, 74],
+        "pagos_cumplidos":[115, 114, 6, 151393.14]
+    },
+    {
+        "nombre":"Salinas Jimenez Samuel",
+        "dictamen":[280, 9, 20, 54],
+        "pagos_cumplidos":[51, 69, 2, 60233.03]
+    }
+]
+
+df = pd.DataFrame(data) 
+
+tipo_dictamen = ["Promesas", "Vía de Solución", "Negativa Fraude", "No Localizada"]
+
+tipo_pagocum = ["Pago Parcial", "Al corriente", "Liquidación", "Reestructura"]
+
+def semana_label(fecha=None):
+    fecha = fecha or datetime.now()
+    iso_year, iso_week, _ = fecha.isocalendar()
+    semana = datetime.now().strftime("%Y%m%d")
+    return f"{iso_year}Sem{iso_week:02d}"
+
+semana = semana_label()
+
+# Colores y estilo
+texto_color = "white"
+barra_color_dictamen = "skyblue"
+
+for _, row in df.iterrows():
+    nombre = row["nombre"]
+    nombre_cobrador = nombre.replace(" ", "")
+
+    # Gráfico de dictamen
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.bar(tipo_dictamen, row["dictamen"], color=barra_color_dictamen)
+    ax.set_title("Dictamen", color=texto_color)
+    ax.tick_params(colors=texto_color)
+    ax.spines['bottom'].set_color(texto_color)
+    ax.spines['left'].set_color(texto_color)
+    ax.spines['top'].set_color('none')
+    ax.spines['right'].set_color('none')
+    plt.xticks(rotation=20, ha="right", fontsize=12, color=texto_color)
+    plt.yticks(color=texto_color)
+    plt.tight_layout()
+    plt.savefig(f"D:/Cobranza/Streamlit/Resources/Visualizations/{semana}_{nombre_cobrador}_dictamen.png", transparent = True, dpi = 400)
+    plt.close()
+
+    # Tabla de pagos cumplidos 
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.axis('off')
+
+    tabla_data = [[tipo_pagocum[i], row["pagos_cumplidos"][i]] for i in range(4)]
+    tabla = ax.table(cellText=tabla_data,
+                     colWidths=[0.5, 0.5],
+                     cellLoc='center',
+                     loc='center')
+
+    tabla.scale(1.5, 2)
+    for key, cell in tabla.get_celld().items():
+        cell.set_edgecolor(texto_color)
+        cell.set_text_props(color=texto_color)
+        cell.set_facecolor('none')
+        cell.set_fontsize(14)
+
+    plt.savefig(f"D:/Cobranza/Streamlit/Resources/Visualizations/{semana}_{nombre_cobrador}_pagoscumpli.png", transparent = True, dpi = 400)
+    plt.close()
