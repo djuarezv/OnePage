@@ -7,6 +7,7 @@ from PIL import Image
 import os
 import base64
 from jinja2 import Template
+import openpyxl
 
 def generar_medalla(valor, tipo="porcentaje"):
     """
@@ -307,4 +308,5 @@ for nombre in orden:
         foto=foto_html,
         visualizaciones=grafico_html
     )
+
     st.markdown(tarjeta_html, unsafe_allow_html=True)
