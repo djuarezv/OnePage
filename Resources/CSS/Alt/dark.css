@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap');
+
+/* Fondo general */
+[data-testid="stAppViewContainer"] {
+    background: linear-gradient(180deg, #0C0C0F 0%, #0B0D13 100%);
+    color: #EDEDED;
+    font-family: 'Inter', sans-serif;
+}
+
+/* HEADER */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.header-title {
+    font-weight: 800;
+    font-size: 44px;
+    color: #FFFFFF;
+    letter-spacing: -0.5px;
+}
+.header-date {
+    font-weight: 600;
+    font-size: 16px;
+    color: #DDAF4C;
+}
+.subheader {
+    font-size: 13px;
+    color: #C5C5C5;
+    font-weight: 500;
+}
+.header-logo {
+    width: 85px;
+    height: auto;
+}
+
+/* TARJETA */
+.cobrador-card {
+    background: #14161D;
+    border: 2px solid #2D2F37;
+    border-radius: 14px;
+    padding: 18px;
+    margin: 24px 0;
+    display: flex;
+    gap: 20px;
+    transition: all 0.25s ease;
+}
+.cobrador-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(37,139,255,0.2);
+}
+
+/* LADO IZQUIERDO */
+.card-left img {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #C95382;
+}
+.card-text div:first-child {
+    font-weight: 700;
+    font-size: 18px;
+    color: #FFFFFF;
+}
+.small-muted {
+    color: #AAAAAA;
+}
+
+/* TABLA */
+.card-center {
+    flex: 1;
+    background: #1A1C25;
+    border-radius: 8px;
+    padding: 12px;
+}
+.semana-header {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    text-align: center;
+    font-weight: 700;
+    color: #FFFFFF;
+    background: #232635;
+    padding: 10px 0;
+}
+.semana-row {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 6px 0;
+}
+.semana-summary {
+    display: grid;
+    grid-template-columns: 1fr repeat(9, 1fr);
+    text-align: center;
+    font-weight: 700;
+    color: #DDAF4C;
+    background: rgba(255,255,255,0.05);
+    padding: 6px 0;
+}
+
+/* VISUALIZACIONES */
+.visualizaciones-container .grafico {
+    background: #0F111A;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* FILTRO */
+.stSelectbox div[data-baseweb="select"] {
+    background-color: #1C1E27 !important;
+    color: #FFFFFF !important;
+    border-radius: 6px !important;
+}
+
+/* AVISO */
+.aviso-semanas {
+    color: #EDEDED;
+}
