@@ -1,9 +1,6 @@
 streamlit
 pandas
 numpy
-datetime
 jinja2
-os
-base64
 pillow
 openpyxl
