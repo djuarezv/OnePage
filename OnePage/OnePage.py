@@ -27,6 +27,7 @@ def generar_medalla(valor, tipo="porcentaje"):
         tipo2 = "porcentaje"
     else:
         val = valor
+        tipo2="decimal"
     # Reglas por tipo
     reglas = {
         "contacto": {
@@ -44,10 +45,10 @@ def generar_medalla(valor, tipo="porcentaje"):
             "amarillo": lambda v: 50 <= v < 70,
             "rojo": lambda v: v < 50
         },
-        "visitas": {
-            "verde": lambda v: v >= 15,
-            "amarillo": lambda v: 10 <= v < 15,
-            "rojo": lambda v: v < 10
+        "visita_por_credito": {
+            "verde": lambda v: v >= 2,
+            "amarillo": lambda v: 1.5 <= v < 2,
+            "rojo": lambda v: v < 1.5
         },
         "plantilla": {
             "verde": lambda v: v >= 90,
@@ -66,7 +67,7 @@ def generar_medalla(valor, tipo="porcentaje"):
     else:
         color = "#808080"  # gris por defecto
     # Formato del valor mostrado
-    texto_valor = f"{val:.1f}%" if tipo2 == "porcentaje" else f"{int(val):,}"
+    texto_valor = f"{val:.1f}%" if tipo2 == "porcentaje" else f"{round(val,2)}" if tipo2 == "decimal" else f"{int(val):,}"
     # HTML del círculo + valor
     return f"""<span style="display:inline-flex; align-items:center; gap:4px;">
         <span style="width:10px; height:10px; border-radius:50%; background-color:{color}; display:inline-block;"></span>
@@ -96,7 +97,7 @@ def load_visualizations(nombre, semana):
         if os.path.exists(ruta):
             img_b64 = image_to_base64(ruta)
             visuales.append(f'''<div class="grafico">
-                                <img src="{img_b64}" style="width:100%; height:300px; object-fit:contain;">
+                                <img src="{img_b64}" style="width:100%; height:200px; object-fit:contain;">
                             </div>''')
     return "".join(visuales)
 
@@ -111,7 +112,7 @@ def load_data(path):
     df["foto_b64"] = df["foto"].apply(image_to_base64)
     return df
 
-df = load_data("OnePage/Data/op_sl_sem43.xlsx")
+df = load_data("OnePage/Data/op_sl_sem44.xlsx")
 
 
 # ---------------------------------------------------------------------
@@ -206,7 +207,7 @@ ultima_plantilla = (
 
 # ---------- Generar tarjetas en el orden calculado ----------
 for nombre in orden:
-    datos = df_filtrado[df_filtrado["nombre"] == nombre].sort_values(by="semana", ascending=True)
+    datos = df_filtrado[df_filtrado["nombre"] == nombre].sort_values(by="semana", ascending=False)
     if datos.empty:
         continue    
     promedio = promedios.get(nombre, 0)
@@ -228,8 +229,8 @@ for nombre in orden:
     summary = {
         "plantilla": ultima_plantilla.get(nombre, None),
         "horas_visita": datos["horas_visita"].mean() if "horas_visita" in datos.columns else 0,
-        "visitas_totales": datos["visitas_totales"].mean() if "visitas_totales" in datos.columns else 0,
-        "visitas": "15 X ERE",
+        "visitas_promedio_x_ere": datos["visitas_promedio_x_ere"].mean() if "visitas_promedio_x_ere" in datos.columns else 0,
+        "visita_por_credito": datos["visita_por_credito"].mean() if "visita_por_credito" in datos.columns else 0,
         "contacto": datos["contacto"].mean() if "contacto" in datos.columns else 0,
         "promesas_contacto": datos["promesas_contacto"].mean() if "promesas_contacto" in datos.columns else 0,
         "promesas_cumplidas": datos["promesas_cumplidas"].mean() if "promesas_cumplidas" in datos.columns else 0,
@@ -243,8 +244,8 @@ for nombre in orden:
         <div>Promedios</div>
         <div>{plantilla_valor}</div>
         <div>{summary['horas_visita']:.1f}</div>
-        <div>{summary['visitas_totales']:.1f}</div>
-        <div>{summary['visitas']}</div>
+        <div>{summary['visitas_promedio_x_ere']:.0f}</div>
+        <div>{summary['visita_por_credito']:.1f}</div>
         <div>{summary['contacto']*100:.1f}%</div>
         <div>{summary['promesas_contacto']*100:.1f}%</div>
         <div>{summary['promesas_cumplidas']*100:.1f}%</div>
@@ -258,8 +259,8 @@ for nombre in orden:
         semana = fila.get("semana", "")
         plantilla = fila.get("plantilla", "")
         horas_visita = fila.get("horas_visita", "")
-        visitas_totales = fila.get("visitas_totales", "")
-        visitas = fila.get("visitas", "")
+        visitas_promedio_x_ere = fila.get("visitas_promedio_x_ere", "")
+        visita_por_credito = fila.get("visita_por_credito", "")
         contacto = fila.get("contacto", "")
         promesas_contacto = fila.get("promesas_contacto", "")
         promesas_cumplidas = fila.get("promesas_cumplidas", "")
@@ -267,7 +268,7 @@ for nombre in orden:
         monto = fila.get("monto", 0)
 
         # Obtener metas automáticas
-        visitas_html = generar_medalla(visitas, tipo="visitas")
+        visita_por_credito_html = generar_medalla(visita_por_credito, tipo="visita_por_credito")
         plantilla_html = generar_medalla(plantilla, tipo="plantilla")
         contacto_html = generar_medalla(contacto, tipo="contacto")
         promesas_contacto_html = generar_medalla(promesas_contacto, tipo="contacto")
@@ -280,8 +281,8 @@ for nombre in orden:
             <div>{semana}</div>
             <div>{plantilla_html}</div>
             <div>{horas_visita:.1f}</div>
-            <div>{visitas_totales:.0f}</div>
-            <div>{visitas_html}</div>
+            <div>{visitas_promedio_x_ere:.0f}</div>
+            <div>{visita_por_credito_html}</div>
             <div>{contacto_html}</div>
             <div>{promesas_contacto_html}</div>
             <div>{promesas_cumplidas_html}</div>
@@ -307,5 +308,4 @@ for nombre in orden:
         foto=foto_html,
         visualizaciones=grafico_html
     )
-
     st.markdown(tarjeta_html, unsafe_allow_html=True)
